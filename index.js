@@ -6,7 +6,7 @@ const cors = require("cors")
 const app = express()
 const port = 3666
 
-const whiteList = ["http://localhost:8080", "https://myAppUrl.com"]
+const whiteList = ["https://localhost:3666", "https://railway.app/project/2a417bce-4d72-472c-bb9b-42663e23d3ca"]
 const options = {
     origin: (origin, cb) =>{
       if(whiteList.includes(origin)){
@@ -17,7 +17,8 @@ const options = {
       }
     }
 }
-app.use(express.json(), cors(options))
+// app.use(express.json(), cors())
+app.use(express.json())
 
 app.get('/', (req, res) => {
   res.send("This is my server on express.js")
