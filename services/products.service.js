@@ -17,7 +17,7 @@ class ProductsService {
         name: faker.commerce.productName(),
         price: parseFloat(faker.commerce.price()),
         image: faker.image.url(),
-        isBlock : faker.datatype.boolean()
+        isBlock: faker.datatype.boolean()
       })
     }
   }
@@ -25,6 +25,7 @@ class ProductsService {
   async create(data) {
     const newProduct = {
       id: this.products.length + 1,
+      isBlock: false,
       ...data
     }
     this.products.push(newProduct);
@@ -42,8 +43,8 @@ class ProductsService {
 
   async getById(id) {
     const myProduct = this.products.find(x => x.id == id)
-    if(!myProduct) throw boom.notFound("Product Not Found")
-    if(myProduct.isBlock) throw boom.conflict("Product is blocked")
+    if (!myProduct) throw boom.notFound("Product Not Found")
+    if (myProduct.isBlock) throw boom.conflict("Product is blocked")
     return myProduct
   }
 
@@ -73,7 +74,7 @@ class ProductsService {
     return { id }
   }
 
-  async getBlockProducts(){
+  async getBlockProducts() {
     return this.products.filter(x => x.isBlock === true)
   }
 

@@ -1,8 +1,12 @@
 const boom = require('@hapi/boom');
 
-class CategoriesService {
+class OrderService {
 
-  constructor() { }
+  constructor(){
+  }
+  async create(data) {
+    return data;
+  }
 
   async get() {
     return [];
@@ -25,4 +29,4 @@ class CategoriesService {
 
 }
 
-module.exports = CategoriesService
+module.exports = OrderService;
