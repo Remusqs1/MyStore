@@ -3,43 +3,48 @@ const { Model, DataTypes, Sequelize } = require('sequelize')
 const USER_TABLE = 'users'
 
 const userSchema = {
-  id : {
-    allowNull : false,
-    autoIncrement : true,
-    primaryKey : true,
-    type : DataTypes.INTEGER
+  id: {
+    allowNull: false,
+    autoIncrement: true,
+    primaryKey: true,
+    type: DataTypes.INTEGER
   },
-  email : {
-    allowNull : false,
-    type : DataTypes.STRING,
-    unique : true
+  email: {
+    allowNull: false,
+    type: DataTypes.STRING,
+    unique: true
   },
-  password : {
-    allowNull : false,
-    type : DataTypes.STRING,
+  password: {
+    allowNull: false,
+    type: DataTypes.STRING,
   },
-  createdAt : {
-    allowNull : false,
-    type : DataTypes.DATE,
-    field:  'create_at',
-    defaultValue : Sequelize.NOW
+  role: {
+    allowNull: false,
+    type: DataTypes.STRING,
+    defaultValue: 'customer'
+  },
+  createdAt: {
+    allowNull: false,
+    type: DataTypes.DATE,
+    field: 'create_at',
+    defaultValue: Sequelize.NOW
   },
 }
 
 class User extends Model {
-  static associate(){
+  static associate() {
     //models
 
   }
 
-  static config(sequelize){
+  static config(sequelize) {
     return {
       sequelize,
-      tableName : USER_TABLE,
-      modelName : 'User',
-      timestamps : false
+      tableName: USER_TABLE,
+      modelName: 'User',
+      timestamps: false
     }
   }
 }
 
-module.exports = { USER_TABLE, userSchema, User}
+module.exports = { USER_TABLE, userSchema, User }
