@@ -8,9 +8,5 @@ module.exports = {
   development: {
     url: URI,
     dialect: 'postgres'
-  },
-  development: {
-    url: URI,
-    dialect: 'postgres'
   }
 }
