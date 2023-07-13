@@ -1,6 +1,7 @@
 const { faker } = require('@faker-js/faker')
 const boom = require("@hapi/boom")
-const pool = require("../libs/postgres.pool")
+// const pool = require("../libs/postgres.pool")
+const sequalize = require("../libs/sequelize")
 
 class ProductsService {
 
@@ -9,8 +10,9 @@ class ProductsService {
   constructor() {
     this.products = []
     this.generate()
-    this.pool = pool;
-    this.pool.on('error', (err) => console.error(err))
+    // this.pool = pool;
+    // this.pool.on('error', (err) => console.error(err))
+    this.sequalize = sequalize; //Sequalize uses pool
   }
 
   generate() {
@@ -37,10 +39,17 @@ class ProductsService {
     return newProduct;
   }
 
+  // This methos is an example of a query with pool
+  // async get() {
+  //   const query = 'SELECT * FROM ' + this.tableName
+  //   const res = await this.pool.query(query);
+  //   return res.rows;
+  // }
+
   async get() {
     const query = 'SELECT * FROM ' + this.tableName
-    const res = await this.pool.query(query);
-    return res.rows;
+    const [data] = await this.sequalize.query(query);
+    return data;
   }
 
   async getById(id) {
