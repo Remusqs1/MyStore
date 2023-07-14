@@ -3,6 +3,7 @@ const { Customer, customerSchema } = require('./customer.model')
 const { Category, categorySchema } = require('./category.model')
 const { Product, productSchema } = require('./product.model')
 const { Order, orderSchema } = require('./order.model')
+const { OrderProduct, orderProductSchema } = require('./order-product.model')
 
 function setupModels(sequalize) {
   User.init(userSchema, User.config(sequalize))
@@ -10,6 +11,7 @@ function setupModels(sequalize) {
   Category.init(categorySchema, Category.config(sequalize))
   Product.init(productSchema, Product.config(sequalize))
   Order.init(orderSchema, Order.config(sequalize))
+  OrderProduct.init(orderProductSchema, OrderProduct.config(sequalize))
 
 
   User.associate(sequalize.models)
