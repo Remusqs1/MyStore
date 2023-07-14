@@ -1,32 +1,21 @@
 const express = require("express")
 const ProductsService = require("../services/products.service")
 const dtoValidatorHandler = require("../middlewares/validator.handler")
-const { createProductDTO, getProductDTO, updateProductDTO } = require("../DTOs/productDTO")
+const { createProductDTO, getProductDTO, updateProductDTO, getProductQueryDTO } = require("../DTOs/productDTO")
 
 const router = express.Router()
 const productService = new ProductsService();
 
-router.get('/', async (req, res) => {
-  const products = await productService.get()
-  res.json(products)
-});
-
-router.get('/filter', async (req, res) => {
-  res.send("This is a filter")
-})
-
-router.get('/blocked', async (req, res, next) => {
-  try {
-    const { id } = req.params
-    const products = await productService.getBlockProducts()
-    res.json({
-      products,
-      total: products.length
-    })
-  } catch (error) {
-    next(error)
-  }
-});
+router.get('/',
+  dtoValidatorHandler(getProductQueryDTO, 'query'),
+  async (req, res, next) => {
+    try {
+      const products = await productService.get(req.query)
+      res.json(products)
+    } catch (error) {
+      next(error)
+    }
+  });
 
 router.get('/:id',
   dtoValidatorHandler(getProductDTO, 'params'),
@@ -54,7 +43,7 @@ router.post('/',
     })
   })
 
-  router.patch('/:id',
+router.patch('/:id',
   dtoValidatorHandler(getProductDTO, 'params'),
   dtoValidatorHandler(updateProductDTO, 'body'),
   async (req, res, next) => {

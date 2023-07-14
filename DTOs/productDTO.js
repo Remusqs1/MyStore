@@ -5,7 +5,12 @@ const name = joi.string().min(3).max(30).regex(/^\w+(?:\s+\w+)*$/) //alphanum an
 const price = joi.number().integer().min(1).positive()
 const image = joi.string().uri()
 const description = joi.string().min(10)
-const categoryId = joi.number().integer().positive()
+const categoryId = joi.number().integer().min(0)
+
+const limit = joi.number().integer().positive()
+const offset = joi.number().integer()
+const priceMin = joi.number().integer().min(1).positive()
+const priceMax = joi.number().integer().min(1).positive()
 
 const createProductDTO = joi.object({
   name: name.required(),
@@ -27,4 +32,15 @@ const getProductDTO = joi.object({
   id: id.required()
 })
 
-module.exports = { createProductDTO, updateProductDTO, getProductDTO }
+const getProductQueryDTO = joi.object({
+  limit,
+  offset,
+  price,
+  priceMin,
+  priceMax: priceMax.when("priceMin", {
+    is: joi.exist(),
+    then: joi.required()
+  })
+})
+
+module.exports = { createProductDTO, updateProductDTO, getProductDTO, getProductQueryDTO }
