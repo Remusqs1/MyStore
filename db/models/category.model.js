@@ -1,52 +1,47 @@
 const { Model, DataTypes, Sequelize } = require('sequelize')
 
-const USER_TABLE = 'users'
+const CATEGORY_TABLE = 'categories'
 
-const userSchema = {
+const categorySchema = {
   id: {
     allowNull: false,
     autoIncrement: true,
     primaryKey: true,
     type: DataTypes.INTEGER
   },
-  email: {
+  name: {
     allowNull: false,
-    type: DataTypes.STRING,
-    unique: true
+    unique: true,
+    type: DataTypes.STRING
   },
-  password: {
-    allowNull: false,
+  image: {
     type: DataTypes.STRING,
-  },
-  role: {
-    allowNull: false,
-    type: DataTypes.STRING,
-    defaultValue: 'customer'
+    allowNull: false
   },
   createdAt: {
     allowNull: false,
     type: DataTypes.DATE,
     field: 'create_at',
     defaultValue: Sequelize.NOW
-  },
+  }
 }
 
-class User extends Model {
+class Category extends Model {
   static associate(models) {
-    this.hasOne(models.Customer, {
-      as: 'customer',
-      foreignKey: 'userId'
+    this.hasMany(models.Product, {
+      as: 'products',
+      foreignKey: 'categoryId'
     })
   }
 
   static config(sequelize) {
     return {
       sequelize,
-      tableName: USER_TABLE,
-      modelName: 'User',
+      tableName: CATEGORY_TABLE,
+      modelName: 'Category',
       timestamps: false
     }
   }
 }
 
-module.exports = { USER_TABLE, userSchema, User }
+module.exports = { CATEGORY_TABLE, Category, categorySchema }

@@ -6,7 +6,12 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "lint": "eslint"
+    "lint": "eslint",
+    "migrations:generate" : "sequelize-cli migration:generate --name",
+    "migrations:run" : "sequelize-cli db:migrate",
+    "migrations:run-debug" : "sequelize-cli db:migrate --debug",
+    "migrations:revert" : "sequelize-cli db:migrate:undo",
+    "migrations:delete" : "sequelize-cli db:migrate:undo:all"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +33,7 @@
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-n": "^16.0.1",
-    "eslint-plugin-promise": "^6.1.1"
+    "eslint-plugin-promise": "^6.1.1",
+    "sequelize-cli": "^6.6.1"
   }
 }
