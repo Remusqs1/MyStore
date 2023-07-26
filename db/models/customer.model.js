@@ -3,6 +3,9 @@ const { Model, DataTypes, Sequelize } = require('sequelize')
 const { USER_TABLE } = require("./user.model")
 const CUSTOMER_TABLE = 'customers'
 
+const AuthService = require("../../services/auth.service")
+const authSvc = new AuthService();
+
 const customerSchema = {
   id: {
     allowNull: false,
@@ -38,7 +41,7 @@ const customerSchema = {
   createdAt: {
     allowNull: false,
     type: DataTypes.DATE,
-    field: 'create_at',
+    field: 'created_at',
     defaultValue: Sequelize.NOW
   },
 }
@@ -57,7 +60,13 @@ class Customer extends Model {
       sequelize,
       tableName: CUSTOMER_TABLE,
       modelName: 'Customer',
-      timestamps: false
+      timestamps: false,
+      hooks: {
+        beforeCreate: async (customer, opt) => {
+          const hash = await authSvc.hashing(customer.user.password);
+          customer.user.password = hash;
+        }
+      }
     }
   }
 }

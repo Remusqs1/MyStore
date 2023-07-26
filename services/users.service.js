@@ -1,5 +1,9 @@
 const boom = require("@hapi/boom")
 const { models } = require("../libs/sequelize")
+const { hashing, verify } = require("../services/auth.service")
+const AuthService = require("./auth.service")
+
+const authSvc = new AuthService();
 
 class UsersService {
 
@@ -24,8 +28,26 @@ class UsersService {
     return user;
   }
 
+
+  async getByEmail(email) {
+    const user = await models.User.findOne({
+      where: { email }
+    })
+
+    if (!user) {
+      throw boom.notFound("User not found");
+    }
+
+    return user;
+  }
+
   async create(data) {
-    const newUser = await models.User.create(data);
+    const hash = await authSvc.hashing(data.password)
+    const newUser = await models.User.create({
+      ...data,
+      password: hash
+    });
+    delete newUser.dataValues.password;
     return newUser;
   }
 
