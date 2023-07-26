@@ -3,6 +3,7 @@ const routerApi = require("./routes/router");
 const { logErrors, errorHandler, boomErrorHandler, queryErrorHandler } = require("./middlewares/error.handler")
 const cors = require("cors")
 const { checkApiKey } = require("./middlewares/auth.handler")
+const passport = require("./utils/auth");
 
 const app = express()
 const port = 3666
@@ -20,6 +21,7 @@ const options = {
 }
 // app.use(express.json(), cors())
 app.use(express.json())
+app.use(passport.initialize());
 
 app.get('/', (req, res) => {
   res.send("This is my server on express.js")
@@ -34,6 +36,7 @@ app.use(logErrors)
 app.use(queryErrorHandler)
 app.use(boomErrorHandler)
 app.use(errorHandler)
+
 
 app.listen(port, () => {
   console.log('running on port: ' + port);

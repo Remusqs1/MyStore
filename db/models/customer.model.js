@@ -2,7 +2,9 @@ const { Model, DataTypes, Sequelize } = require('sequelize')
 
 const { USER_TABLE } = require("./user.model")
 const CUSTOMER_TABLE = 'customers'
-const { hashing } = require("../../services/auth.service")
+
+const AuthService = require("../../services/auth.service")
+const authSvc = new AuthService();
 
 const customerSchema = {
   id: {
@@ -61,7 +63,7 @@ class Customer extends Model {
       timestamps: false,
       hooks: {
         beforeCreate: async (customer, opt) => {
-          const hash = await hashing(customer.user.password);
+          const hash = await authSvc.hashing(customer.user.password);
           customer.user.password = hash;
         }
       }
