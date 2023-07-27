@@ -1,7 +1,7 @@
 const express = require('express');
 const OrderService = require("../services/order.service")
 const dtoValidatorHandler = require("../middlewares/validator.handler")
-const { createOrderSchema, getOrderSchema, updateOrderSchema, createItemSchema, updateItemSchema } = require("../DTOs/orderDTO")
+const { createOrderSchema, getOrderSchema, updateOrderSchema, createItemSchema } = require("../DTOs/orderDTO")
 const passport = require('passport');
 
 const router = express.Router();
@@ -72,7 +72,6 @@ router.patch('/:id',
       next(error)
     }
   })
-
 
 router.delete('/:id',
   passport.authenticate('jwt', { session: false }),
