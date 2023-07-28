@@ -3,13 +3,13 @@ const { models } = require("../libs/sequelize")
 
 class CustomersService {
 
-  constructor() {
-
-  }
-
   async get() {
     const res = await models.Customer.findAll({
-      include: ['user']
+      include: [{
+        model: models.User,
+        as: 'user',
+        attributes: { exclude: ['password', 'recoveryToken'] }
+      }]
     });
     return res;
   }
@@ -59,7 +59,7 @@ class CustomersService {
 
   async delete(id) {
     const customer = await this.getById(id);
-    const res = await user.destroy()
+    const res = await customer.destroy()
     return { id };
   }
 
