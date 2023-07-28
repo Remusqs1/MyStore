@@ -2,6 +2,7 @@ const express = require("express")
 const ProductsService = require("../services/products.service")
 const dtoValidatorHandler = require("../middlewares/validator.handler")
 const { createProductDTO, getProductDTO, updateProductDTO, getProductQueryDTO } = require("../DTOs/productDTO")
+const passport = require('passport');
 
 const router = express.Router()
 const productService = new ProductsService();
@@ -31,6 +32,7 @@ router.get('/:id',
   });
 
 router.post('/',
+  passport.authenticate('jwt', { session: false }),
   dtoValidatorHandler(createProductDTO, 'body'),
   async (req, res) => {
     const body = req.body
@@ -44,6 +46,7 @@ router.post('/',
   })
 
 router.patch('/:id',
+  passport.authenticate('jwt', { session: false }),
   dtoValidatorHandler(getProductDTO, 'params'),
   dtoValidatorHandler(updateProductDTO, 'body'),
   async (req, res, next) => {
@@ -64,15 +67,17 @@ router.patch('/:id',
   })
 
 
-router.delete('/:id', async (req, res) => {
-  const { id } = req.params
-  const deletedId = await productService.delete(id)
+router.delete('/:id',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    const { id } = req.params
+    const deletedId = await productService.delete(id)
 
-  res.json({
-    message: 'Deleted',
-    success: true,
-    id: deletedId
+    res.json({
+      message: 'Deleted',
+      success: true,
+      id: deletedId
+    })
   })
-})
 
 module.exports = router;

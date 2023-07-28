@@ -17,6 +17,18 @@ function boomErrorHandler(err, req, res, next) {
     const { output } = err
     res.status(output.statusCode).json(output.payload)
   }
+  else if (err.name === "TokenExpiredError") {
+    res.status(401).json({
+      statusCode: 401,
+      message: "Expired Token"
+    });
+  }
+  else if (err.name === "JsonWebTokenError") {
+    res.status(498).json({
+      statusCode: 498,
+      message: "Invalid"
+    });
+  }
   next(err)
 }
 

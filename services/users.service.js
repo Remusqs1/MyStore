@@ -1,21 +1,22 @@
 const boom = require("@hapi/boom")
 const { models } = require("../libs/sequelize")
-const { hashing, verify } = require("../services/auth.service")
 const AuthService = require("./auth.service")
 
 const authSvc = new AuthService();
 
 class UsersService {
 
-  constructor() {
-
-  }
-
   async get() {
     const res = await models.User.findAll({
       include: ['customer']
     });
-    return res;
+
+    const users = res.map(user => {
+      const { password, recoveryToken, ...safeUsers } = user.toJSON()
+      return safeUsers;
+    })
+
+    return users;
   }
 
   async getById(id) {
@@ -25,9 +26,22 @@ class UsersService {
       throw boom.notFound("User not found");
     }
 
+    delete user.dataValues.password;
+    delete user.dataValues.recoveryToken;
+
     return user;
   }
 
+  async getUserByEmail(email, password) {
+    const user = await this.getByEmail(email);
+    // if (!user) throw boom.notFound(); //notFound is not recomended
+    if (!user) throw boom.unauthorized();
+
+    const isMatch = await authSvc.verifyPass(password, user.password);
+    if (!isMatch) throw boom.unauthorized();
+    delete user.dataValues.password;
+    return user;
+  }
 
   async getByEmail(email) {
     const user = await models.User.findOne({
@@ -35,7 +49,7 @@ class UsersService {
     })
 
     if (!user) {
-      throw boom.notFound("User not found");
+      throw boom.unauthorized("User not found");
     }
 
     return user;
@@ -59,7 +73,7 @@ class UsersService {
 
   async delete(id) {
     const user = await this.getById(id);
-    const res = await user.destroy()
+    await user.destroy()
     return { id };
   }
 

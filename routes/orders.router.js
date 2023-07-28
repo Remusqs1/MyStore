@@ -1,7 +1,8 @@
 const express = require('express');
 const OrderService = require("../services/order.service")
 const dtoValidatorHandler = require("../middlewares/validator.handler")
-const { createOrderSchema, getOrderSchema, updateOrderSchema, createItemSchema, updateItemSchema } = require("../DTOs/orderDTO")
+const { createOrderSchema, getOrderSchema, updateOrderSchema, createItemSchema } = require("../DTOs/orderDTO")
+const passport = require('passport');
 
 const router = express.Router();
 const orderService = new OrderService();
@@ -24,6 +25,7 @@ router.get('/:id',
   });
 
 router.post('/',
+  passport.authenticate('jwt', { session: false }),
   dtoValidatorHandler(createOrderSchema, 'body'),
   async (req, res) => {
     const body = req.body
@@ -37,6 +39,7 @@ router.post('/',
   })
 
 router.post('/addItem',
+  passport.authenticate('jwt', { session: false }),
   dtoValidatorHandler(createItemSchema, 'body'),
   async (req, res) => {
     const body = req.body
@@ -50,6 +53,7 @@ router.post('/addItem',
   })
 
 router.patch('/:id',
+  passport.authenticate('jwt', { session: false }),
   dtoValidatorHandler(getOrderSchema, 'params'),
   dtoValidatorHandler(updateOrderSchema, 'body'),
   async (req, res, next) => {
@@ -69,16 +73,17 @@ router.patch('/:id',
     }
   })
 
+router.delete('/:id',
+  passport.authenticate('jwt', { session: false }),
+  async (req, res) => {
+    const { id } = req.params
+    const deletedId = await orderService.delete(id)
 
-router.delete('/:id', async (req, res) => {
-  const { id } = req.params
-  const deletedId = await orderService.delete(id)
-
-  res.json({
-    message: 'Deleted',
-    success: true,
-    id: deletedId
+    res.json({
+      message: 'Deleted',
+      success: true,
+      id: deletedId
+    })
   })
-})
 
 module.exports = router;

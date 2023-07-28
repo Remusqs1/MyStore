@@ -1,5 +1,4 @@
 const { Model, DataTypes, Sequelize } = require('sequelize')
-
 const USER_TABLE = 'users'
 
 const userSchema = {
@@ -16,7 +15,12 @@ const userSchema = {
   },
   password: {
     allowNull: false,
-    type: DataTypes.STRING,
+    type: DataTypes.STRING
+  },
+  recoveryToken: {
+    field: "recovery_token",
+    allowNull: true,
+    type: DataTypes.STRING
   },
   role: {
     allowNull: false,
@@ -28,7 +32,7 @@ const userSchema = {
     type: DataTypes.DATE,
     field: 'created_at',
     defaultValue: Sequelize.NOW
-  },
+  }
 }
 
 class User extends Model {
